@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph>
+	<nodes>
+		<node>
+			<name>A</name>
+			<posX>10</posX>
+			<posY>50</posY>
+		</node>
+		<node>
+			<name>B</name>
+			<posX>100</posX>
+			<posY>30</posY>
+		</node>
+		<node>
+			<name>C</name>
+			<posX>100</posX>
+			<posY>70</posY>
+		</node>
+		<node>
+			<name>D</name>
+			<posX>200</posX>
+			<posY>50</posY>
+		</node>
+	</nodes>
+	<edges>
+		<edge>
+			<from>A</from>
+			<to>B</to>
+			<cost>2</cost>
+		</edge>
+		<edge>
+			<from>A</from>
+			<to>C</to>
+			<cost>2</cost>
+		</edge>
+		<edge>
+			<from>B</from>
+			<to>D</to>
+			<cost>3</cost>
+		</edge>
+		<edge>
+			<from>C</from>
+			<to>D</to>
+			<cost>2</cost>
+		</edge>
+	</edges>
+</graph>
