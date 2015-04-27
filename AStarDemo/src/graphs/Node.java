@@ -13,7 +13,8 @@ public class Node implements Comparable<Node> {
 										// pathfinding already found the ideal
 										// path
 	
-	public boolean isOnBestPath = false;
+	public boolean isOnBestPath = false; //for demo purposes / to display
+	public boolean hasBeenExpanded = false; //for demo purposes / to display
 
 	public Node(String name, int posX, int posY) throws Exception {
 		if (name.contains("-")) {
@@ -43,6 +44,15 @@ public class Node implements Comparable<Node> {
 		this.pathfindingValue = cost;
 	}
 
+	public void resetPathfindingData(){
+		this.setCostTillThisNode(0);
+		this.setPathfindingValue(0);
+		this.setPreviousNode(null);
+		this.isOnBestPath = false;
+		this.hasBeenExpanded = false;
+		this.completed = false;
+	}
+	
 	public String getName() {
 		return name;
 	}

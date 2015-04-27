@@ -15,6 +15,22 @@ public class Graph {
 
 	private PriorityQueue<Node> openQueue = new PriorityQueue<Node>();
 
+	private int statCheckedNodes = 0;
+
+	public heuristicMode heuristicMode;
+
+	public enum heuristicMode {
+		INACTIVE, GEOMETRIC_APPROXIMATION_DIRECT
+	}
+
+	public Graph() {
+		heuristicMode = heuristicMode.INACTIVE;
+	}
+
+	public int getStatCheckedNodes() {
+		return statCheckedNodes;
+	}
+
 	public Collection<Node> getEdgingNodes(Node node) {
 		HashSet<Node> hs = new HashSet<Node>();
 
@@ -74,8 +90,14 @@ public class Graph {
 
 		while (openQueue.isEmpty() == false) {
 			// as long as we have some more nodes to check...
+
+			statCheckedNodes++;
+
 			Node currentNode = openQueue.poll(); // take the node with the
 													// lowest pathfindingValue
+
+			currentNode.hasBeenExpanded = true; // for demo purposes
+
 			if (currentNode.getName() == targetNodeName) {
 				// Success! We found a valid path!
 				return currentNode;
@@ -126,16 +148,27 @@ public class Graph {
 
 	public void resetPathfindingData() {
 		openQueue.clear();
+		statCheckedNodes = 0;
 		for (Node node : nodes.values()) {
-			node.setCostTillThisNode(0);
-			node.setPathfindingValue(0);
-			node.setPreviousNode(null);
-			node.isOnBestPath = false;
+			node.resetPathfindingData();
 		}
 	}
 
 	public double estimateCost(Node from, Node to) {
-		// TODO
-		return 0;
+		switch (heuristicMode) {
+		case GEOMETRIC_APPROXIMATION_DIRECT:
+			// please note that this mode could return invalid data if two notes
+			// can be connected for less costs than their distance (according to
+			// posX & posY)
+			// this mode should be okay for graphs where the cost between two
+			// notes = their distance
+			System.out.println("Debug. " + from.getName() + " --> " + to.getName());
+			System.out.println("  "
+					+ Math.sqrt(Math.abs(from.getPosX() - to.getPosY()) + Math.abs(from.getPosY() - to.getPosY())));
+			return Math.sqrt(Math.abs(from.getPosX() - to.getPosY()) + Math.abs(from.getPosY() - to.getPosY()));
+
+		default: // or INACTIVE
+			return 0;
+		}
 	}
 }

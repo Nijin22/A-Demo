@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Stack;
 
 import graphs.*;
+import graphs.Graph.heuristicMode;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -97,14 +98,15 @@ public class MainWindow extends Application {
 						pathStack.add(currentNode);
 						currentNode = currentNode.getPreviousNode();
 					}
-					
-					//The startNode has no previous, but should appear in our output
+
+					// The startNode has no previous, but should appear in our
+					// output
 					pathStack.add(graph.getNodeByName(startNodeName));
 					graph.getNodeByName(startNodeName).isOnBestPath = true;
-					
-					//Now re-read the stack to get the path in the right order
+
+					// Now re-read the stack to get the path in the right order
 					while (!pathStack.isEmpty()) {
-						if (path != ""){
+						if (path != "") {
 							path = path + " --> ";
 						}
 						path = path + pathStack.pop().getName();
@@ -115,11 +117,12 @@ public class MainWindow extends Application {
 					alert.setTitle("Path found!");
 					alert.setHeaderText("A valid path between " + startNodeName + " and " + targetNodeName
 							+ " has been found!");
-					alert.setContentText(path);
+					alert.setContentText(path + "\n" + graph.getStatCheckedNodes() + "/" + graph.getNodes().size()
+							+ " nodes checked.");
 					System.out.println("Path:");
 					System.out.println(path);
-					
-					//re-render the graph
+
+					// re-render the graph
 					renderGraph();
 
 					alert.showAndWait();
@@ -135,6 +138,37 @@ public class MainWindow extends Application {
 
 			}
 		});
+		
+		// heuristics button
+		Button btnHeuristic = new Button("Heuristic: None");
+		btnHeuristic.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				List<String> choices = new ArrayList<>();
+				choices.add("None");
+				choices.add("As the crow flies approximation");
+
+				ChoiceDialog<String> dialog = new ChoiceDialog<>(choices.get(0), choices);
+				dialog.setTitle("Choose heuristic");
+				dialog.setHeaderText("Please chose the heuristic you want to apply.");
+				dialog.setContentText("Heuristic:");
+				Optional<String> result = dialog.showAndWait();
+				if (result.isPresent()) {
+					btnHeuristic.setText("Heuristic: " + result.get());
+					switch (result.get()) {
+					case "As the crow flies approximation":
+						graph.heuristicMode = heuristicMode.GEOMETRIC_APPROXIMATION_DIRECT;
+						break;
+					default: // or None
+						graph.heuristicMode = heuristicMode.INACTIVE;
+						break;
+					}
+				}
+				
+			}
+			
+		});
 
 		// Putting-together the GUI
 		GridPane pane = new GridPane();
@@ -145,7 +179,8 @@ public class MainWindow extends Application {
 
 		pane.add(btnLoadXML, 0, 0);
 		pane.add(canvas, 0, 1);
-		pane.add(btnPerform, 0, 2);
+		pane.add(btnHeuristic, 0, 2);
+		pane.add(btnPerform, 0, 3);
 
 		// Displaying scene
 		Scene scene = new Scene(pane, windowSizeX, windowSizeY);
@@ -187,18 +222,18 @@ public class MainWindow extends Application {
 
 		// drawing nodes
 		for (Node node : graph.getNodes()) {
-			//Circle background for best path
+			// Circle background for best path
 			if (node.isOnBestPath) {
 				gc.setFill(Color.GREEN);
 				gc.fillOval(node.getPosX() - 15, node.getPosY() - 15, 30, 30);
 			}
-			
-			//Circle background if node was checked
-			if (node.getPreviousNode() != null) {
+
+			// Circle background if node has been expanded
+			if (node.hasBeenExpanded) {
 				gc.setFill(Color.ORANGERED);
 				gc.fillOval(node.getPosX() - 12, node.getPosY() - 12, 24, 24);
 			}
-			
+
 			// Circles
 			gc.setFill(colorHTWG);
 			gc.fillOval(node.getPosX() - 10, node.getPosY() - 10, 20, 20);
