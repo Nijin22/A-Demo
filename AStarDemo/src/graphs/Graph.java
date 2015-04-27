@@ -130,6 +130,7 @@ public class Graph {
 			node.setCostTillThisNode(0);
 			node.setPathfindingValue(0);
 			node.setPreviousNode(null);
+			node.isOnBestPath = false;
 		}
 	}
 

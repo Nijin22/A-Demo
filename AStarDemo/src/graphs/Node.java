@@ -12,6 +12,8 @@ public class Node implements Comparable<Node> {
 										// further calculation is required and
 										// pathfinding already found the ideal
 										// path
+	
+	public boolean isOnBestPath = false;
 
 	public Node(String name, int posX, int posY) throws Exception {
 		if (name.contains("-")) {

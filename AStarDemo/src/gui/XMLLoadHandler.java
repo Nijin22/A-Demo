@@ -31,7 +31,7 @@ public class XMLLoadHandler implements EventHandler<ActionEvent> {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open graph xml file");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("XML-File", "*.xml"));
-		File defaultDirectory = new File("C:/Users/Dennis/workspace/ALDA-AStar/graphs");
+		File defaultDirectory = new File("C:/Users/Dennis/git/AStarDemo/graphs");
 		fileChooser.setInitialDirectory(defaultDirectory);
 
 		File file = fileChooser.showOpenDialog(stage);

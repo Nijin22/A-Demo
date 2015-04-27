@@ -3,6 +3,7 @@ package gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Stack;
 
 import graphs.*;
 import javafx.application.Application;
@@ -88,15 +89,25 @@ public class MainWindow extends Application {
 					graph.performAStar(startNodeName, targetNodeName);
 
 					// walking the path and grabbing nodes names
-					// TODO revert (fill a stack, and then read it again)
 					String path = "";
+					Stack<Node> pathStack = new Stack<>();
 					Node currentNode = graph.getNodeByName(targetNodeName);
 					while (currentNode.getPreviousNode() != null) {
-						if (path != "") {
+						currentNode.isOnBestPath = true;
+						pathStack.add(currentNode);
+						currentNode = currentNode.getPreviousNode();
+					}
+					
+					//The startNode has no previous, but should appear in our output
+					pathStack.add(graph.getNodeByName(startNodeName));
+					graph.getNodeByName(startNodeName).isOnBestPath = true;
+					
+					//Now re-read the stack to get the path in the right order
+					while (!pathStack.isEmpty()) {
+						if (path != ""){
 							path = path + " --> ";
 						}
-						path = path + currentNode.getName();
-						currentNode = currentNode.getPreviousNode();
+						path = path + pathStack.pop().getName();
 					}
 
 					// displaying result
@@ -105,6 +116,11 @@ public class MainWindow extends Application {
 					alert.setHeaderText("A valid path between " + startNodeName + " and " + targetNodeName
 							+ " has been found!");
 					alert.setContentText(path);
+					System.out.println("Path:");
+					System.out.println(path);
+					
+					//re-render the graph
+					renderGraph();
 
 					alert.showAndWait();
 
@@ -171,6 +187,18 @@ public class MainWindow extends Application {
 
 		// drawing nodes
 		for (Node node : graph.getNodes()) {
+			//Circle background for best path
+			if (node.isOnBestPath) {
+				gc.setFill(Color.GREEN);
+				gc.fillOval(node.getPosX() - 15, node.getPosY() - 15, 30, 30);
+			}
+			
+			//Circle background if node was checked
+			if (node.getPreviousNode() != null) {
+				gc.setFill(Color.ORANGERED);
+				gc.fillOval(node.getPosX() - 12, node.getPosY() - 12, 24, 24);
+			}
+			
 			// Circles
 			gc.setFill(colorHTWG);
 			gc.fillOval(node.getPosX() - 10, node.getPosY() - 10, 20, 20);
