@@ -97,6 +97,8 @@ public class Graph {
 													// lowest pathfindingValue
 
 			currentNode.hasBeenExpanded = true; // for demo purposes
+			
+			System.out.println("Checking " + currentNode.getName() + "(" + currentNode.getPathfindingValue() + ")");
 
 			if (currentNode.getName() == targetNodeName) {
 				// Success! We found a valid path!
@@ -162,9 +164,9 @@ public class Graph {
 			// posX & posY)
 			// this mode should be okay for graphs where the cost between two
 			// notes = their distance
-			System.out.println("Debug. " + from.getName() + " --> " + to.getName());
-			System.out.println("  "
-					+ Math.sqrt(Math.abs(from.getPosX() - to.getPosY()) + Math.abs(from.getPosY() - to.getPosY())));
+//			System.out.println("Debug. " + from.getName() + " --> " + to.getName());
+//			System.out.println("  "
+//					+ Math.sqrt(Math.abs(from.getPosX() - to.getPosY()) + Math.abs(from.getPosY() - to.getPosY())));
 			return Math.sqrt(Math.abs(from.getPosX() - to.getPosY()) + Math.abs(from.getPosY() - to.getPosY()));
 
 		default: // or INACTIVE
